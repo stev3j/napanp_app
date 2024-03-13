@@ -17,7 +17,11 @@ const HomeScreen = ({ route, navigation }: navProps) => {
 
     return (
         <Background>
-            <SubTitle>시간을 정해주세요</SubTitle>
+            <AlramContainer>
+                <AlramIcon source={require('../assets/images/ic_alram.png')}/>
+                <SubTitle>시간을 정해주세요</SubTitle>
+            </AlramContainer>
+            
             <Clickable onPress={() => {setModalVisible(true)}}>
                 <TimeTitle>{minute+':'+second}</TimeTitle>
             </Clickable>
@@ -58,6 +62,18 @@ const HomeScreen = ({ route, navigation }: navProps) => {
     )
 }
 
+const AlramContainer = styled.View`
+    flex-direction: row;
+    align-items: center;
+    margin-top: 70px;
+`
+
+const AlramIcon = styled.Image`
+   width: 12px;
+   height: 14px;
+   margin-right: 8px;
+`
+
 const CatImage = styled.Image`
     margin-top: 20px;
     width: 240px;
@@ -71,7 +87,6 @@ const Background = styled.SafeAreaView`
 
 const SubTitle = styled.Text`
     font-size: 20px;
-    margin-top: 70px;
     color: ${colors.text_gray_100};
 `
 
