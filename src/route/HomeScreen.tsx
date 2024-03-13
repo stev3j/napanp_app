@@ -17,6 +17,7 @@ const HomeScreen = ({ route, navigation }: navProps) => {
     const dispatch = useAppDispatch()
     
     const [isModalVisible, setModalVisible] = useState(false)
+    const [isPlay, setPlay] = useState(false)
 
     return (
         <Background>
@@ -39,8 +40,14 @@ const HomeScreen = ({ route, navigation }: navProps) => {
                     <CircleButton source={require('../assets/images/btn_start.png')}/>
                 </Clickable>
                 <Spacer/>
-                <Clickable>
-                    <CircleButton source={require('../assets/images/btn_start.png')}/>
+                <Clickable onPress={() => {
+                    if (isPlay == false) setPlay(true)
+                    else setPlay(false)
+                }}>
+                    <CircleButton source={
+                        isPlay ? require('../assets/images/btn_pause.png') 
+                        : require('../assets/images/btn_start.png')
+                        }/>
                 </Clickable>
             </ButtonContainer>
             
