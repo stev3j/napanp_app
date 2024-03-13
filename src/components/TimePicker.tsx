@@ -28,21 +28,20 @@ const TimePicker = (props: TimePickerType) => {
     const handleMinutes = (event: any) => {
         minuteY = Math.floor(event.nativeEvent.contentOffset.y / 36.5)
         console.log(minuteY);
-        if (minuteY < 10) {
-            props.setMinute('0'+minuteY)
-        } else {
-            props.setMinute(minuteY)
-        }
+        if (minuteY < 0) props.setMinute('00')
+        else if (minuteY > 60) props.setMinute('60')
+        else if (minuteY < 10) props.setMinute('0'+minuteY)
+        else props.setMinute(minuteY)
+        
     }
 
     const handleSeconds = (event: any) => {
         secondY = Math.floor(event.nativeEvent.contentOffset.y / 36.5)
         console.log(secondY);
-        if (secondY < 10) {
-            props.setSecond('0'+secondY)
-        } else {
-            props.setSecond(secondY)
-        }
+        if (secondY < 0) props.setSecond('00')
+        else if (secondY > 60) props.setSecond('60')
+        else if (secondY < 10) props.setSecond('0'+secondY)
+        else props.setSecond(secondY)
     }
 
     return (
