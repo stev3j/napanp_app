@@ -1,7 +1,6 @@
 import React from 'react';
-import {
-  SafeAreaView,
-} from 'react-native';
+import { Provider } from 'react-redux';
+import { store } from './src/redux/store';
 
 // Navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -18,16 +17,18 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (
-    <NavigationContainer>
-      <RootStack.Navigator 
-        initialRouteName="Home"
-        screenOptions={{header: ()=>{return null}}}
-        >
-        <RootStack.Group>
-          <RootStack.Screen name="Home" component={HomeScreen}/>
-        </RootStack.Group>
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootStack.Navigator 
+          initialRouteName="Home"
+          screenOptions={{header: ()=>{return null}}}
+          >
+          <RootStack.Group>
+            <RootStack.Screen name="Home" component={HomeScreen}/>
+          </RootStack.Group>
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

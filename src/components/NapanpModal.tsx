@@ -4,21 +4,17 @@ import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Spacer } from '../utils/UtilFunctions';
 import TimePicker from './TimePicker';
+import { useAppDispatch } from '../redux/hook';
+import { setTimer } from '../redux/slices/timer';
 
 
 type NapnapModalType = {
     isModalVisible: boolean
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-    setMinute: any
-    setSecond: any
 }
 
 const NapnapModal = (props: NapnapModalType) => {
-
-    // useEffect(() => {
-    //     props.setMinute('00')
-    //     props.setSecond('00')
-    // })
+    const dispatch = useAppDispatch()
 
     return (
         <Modal
@@ -30,8 +26,8 @@ const NapnapModal = (props: NapnapModalType) => {
                 <ModalContainer>
                     <TextContainer>
                         <TouchableOpacity onPress={() => {
-                            props.setMinute('00')
-                            props.setSecond('00')
+                            /** TODO: 이거 맞나? */
+                            dispatch(setTimer({minute: '00', second: '00'}))
                             props.setModalVisible(false)
                         }}>
                             <CloseText>닫기</CloseText>
@@ -43,10 +39,8 @@ const NapnapModal = (props: NapnapModalType) => {
                             <SetText>설정</SetText>
                         </TouchableOpacity>
                     </TextContainer>
-                    {/* <TimeSelector limit = {LIMITS} defaultOffsetHour = {"12"}/> */}
 
-                    {/** 스크롤뷰 + 멈춤 + 그림자 */}
-                    <TimePicker setMinute={props.setMinute} setSecond={props.setSecond}/>
+                    <TimePicker/>
                 </ModalContainer>
             </WholeScreen>
         </Modal>

@@ -7,13 +7,16 @@ import { RootStackParamList } from '../../App';
 import NapnapModal from '../components/NapanpModal';
 import { Spacer } from '../utils/UtilFunctions';
 import MusicContainer from '../components/MusicContainer';
+import { useAppDispatch, useAppSelector } from '../redux/hook';
+import { setMinute, setTimer } from '../redux/slices/timer';
 
 type navProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 const HomeScreen = ({ route, navigation }: navProps) => {
+    const timer = useAppSelector(state => state.timer.timer);
+    const dispatch = useAppDispatch()
+    
     const [isModalVisible, setModalVisible] = useState(false)
-    const [minute, setMinute] = useState('00')
-    const [second, setSecond] = useState('00')
 
     return (
         <Background>
@@ -22,13 +25,15 @@ const HomeScreen = ({ route, navigation }: navProps) => {
                 <SubTitle>시간을 정해주세요</SubTitle>
             </AlramContainer>
             
-            <Clickable onPress={() => {setModalVisible(true)}}>
-                <TimeTitle>{minute+':'+second}</TimeTitle>
+            <Clickable onPress={() => {
+                dispatch(setTimer({minute: '00', second: '00'}))
+                setModalVisible(true)
+                }}>
+                <TimeTitle>{timer.minute+':'+timer.second}</TimeTitle>
             </Clickable>
 
             <CatImage source={require('../assets/images/cat.png')}/>
             
-        
             <ButtonContainer>
                 <Clickable>
                     <CircleButton source={require('../assets/images/btn_start.png')}/>
@@ -54,8 +59,6 @@ const HomeScreen = ({ route, navigation }: navProps) => {
             <NapnapModal 
                 isModalVisible={isModalVisible}
                 setModalVisible={setModalVisible}
-                setMinute={setMinute}
-                setSecond={setSecond}
             />
             
         </Background>

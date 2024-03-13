@@ -2,6 +2,8 @@ import { ScrollView, Button, StyleSheet, View, Animated, } from 'react-native';
 import colors from '../styles/colors';
 import styled from 'styled-components/native';
 import { Spacer } from '../utils/UtilFunctions';
+import { useAppDispatch } from '../redux/hook';
+import { setMinute, setSecond } from '../redux/slices/timer';
 
 const timeList = [
     '', '', '', '0','1','2','3','4','5','6','7','8','9',
@@ -15,33 +17,26 @@ const timeList = [
 let minuteY;
 let secondY;
 
-// 42, 79, 116
-
-type TimePickerType = {
-    setMinute: any,
-    setSecond: any,
-}
-
-const TimePicker = (props: TimePickerType) => {
+const TimePicker = () => {
+    const dispatch = useAppDispatch();
     
-
     const handleMinutes = (event: any) => {
         minuteY = Math.floor(event.nativeEvent.contentOffset.y / 36.5)
         console.log(minuteY);
-        if (minuteY < 0) props.setMinute('00')
-        else if (minuteY > 60) props.setMinute('60')
-        else if (minuteY < 10) props.setMinute('0'+minuteY)
-        else props.setMinute(minuteY)
+        if (minuteY < 0) dispatch(setMinute({minute: '00'}))
+        else if (minuteY > 60) dispatch(setMinute({minute: '60'}))
+        else if (minuteY < 10) dispatch(setMinute({minute: '0'+minuteY}))
+        else dispatch(setMinute({minute: minuteY}))
         
     }
 
     const handleSeconds = (event: any) => {
         secondY = Math.floor(event.nativeEvent.contentOffset.y / 36.5)
         console.log(secondY);
-        if (secondY < 0) props.setSecond('00')
-        else if (secondY > 60) props.setSecond('60')
-        else if (secondY < 10) props.setSecond('0'+secondY)
-        else props.setSecond(secondY)
+        if (secondY < 0) dispatch(setSecond({second: '00'}))
+        else if (secondY > 60) dispatch(setSecond({second: '60'}))
+        else if (secondY < 10) dispatch(setSecond({second: '0'+secondY}))
+        else dispatch(setSecond({second: secondY}))
     }
 
     return (
@@ -86,7 +81,7 @@ const TimeText = styled.Text`
 `
 
 const SubTimeText = styled.Text`
-    font-size: 16;
+    font-size: 16px;
     color: ${colors.text_gray_100};
 `
 
