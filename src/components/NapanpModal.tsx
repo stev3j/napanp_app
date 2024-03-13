@@ -1,14 +1,25 @@
+import React, { useEffect, useState } from 'react';
 import { Modal, TouchableOpacity, } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Spacer } from '../utils/UtilFunctions';
+import TimePicker from './TimePicker';
+
 
 type NapnapModalType = {
     isModalVisible: boolean
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+    setMinute: any
+    setSecond: any
 }
 
 const NapnapModal = (props: NapnapModalType) => {
+
+    // useEffect(() => {
+    //     props.setMinute('00')
+    //     props.setSecond('00')
+    // })
+
     return (
         <Modal
             animationType="slide"
@@ -18,19 +29,31 @@ const NapnapModal = (props: NapnapModalType) => {
             <WholeScreen>
                 <ModalContainer>
                     <TextContainer>
-                        <TouchableOpacity onPress={() => {props.setModalVisible(false)}}>
+                        <TouchableOpacity onPress={() => {
+                            props.setMinute('00')
+                            props.setSecond('00')
+                            props.setModalVisible(false)
+                        }}>
                             <CloseText>닫기</CloseText>
                         </TouchableOpacity>
                         <Spacer/>
-                        <TouchableOpacity onPress={() => {props.setModalVisible(false)}}>
+                        <TouchableOpacity onPress={() => {
+                            props.setModalVisible(false)
+                        }}>
                             <SetText>설정</SetText>
                         </TouchableOpacity>
                     </TextContainer>
+                    {/* <TimeSelector limit = {LIMITS} defaultOffsetHour = {"12"}/> */}
+
+                    {/** 스크롤뷰 + 멈춤 + 그림자 */}
+                    <TimePicker setMinute={props.setMinute} setSecond={props.setSecond}/>
                 </ModalContainer>
             </WholeScreen>
         </Modal>
     );
 }
+
+
 
 const WholeScreen = styled.View`
     flex: 1;
@@ -39,7 +62,7 @@ const WholeScreen = styled.View`
 
 const ModalContainer = styled.View`
     background-color: ${colors.container_gray_700};
-    height: 30%;
+    height: 35%;
     border-radius: 10px;
 `
 
