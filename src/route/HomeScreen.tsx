@@ -6,6 +6,7 @@ import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button } from
 import { RootStackParamList } from '../../App';
 import NapnapModal from '../components/NapanpModal';
 import { Spacer } from '../utils/UtilFunctions';
+import MusicContainer from '../components/MusicContainer';
 
 type navProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -34,6 +35,17 @@ const HomeScreen = ({ route, navigation }: navProps) => {
                 </Clickable>
             </ButtonContainer>
             
+            <MusicContainer
+                iconPath={require('../assets/images/ic_music.png')}
+                title='배경음악' 
+                selectedItem='추적추적 빗소리'/>
+            <View style={{height: 8}}/>
+            <MusicContainer
+                iconPath={require('../assets/images/ic_notification.png')}
+                title='타이머 종료음' 
+                selectedItem='알람음 1'/>
+
+            <View style={{height: 60}}/>
 
             <NapnapModal 
                 isModalVisible={isModalVisible}
