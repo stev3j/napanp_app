@@ -11,7 +11,7 @@ const timeList = [
     '20','21','22','23','24','25','26','27','28','29',
     '30','31','32','33','34','35','36','37','38','39',
     '40','41','42','43','44','45','46','47','48','49',
-    '50','51','52','53','54','55','56','57','58','59', '60', '', ''
+    '50','51','52','53','54','55','56','57','58','59', '', ''
 ];
 
 let minuteY;
@@ -22,9 +22,9 @@ const TimePicker = () => {
     
     const handleMinutes = (event: any) => {
         minuteY = Math.floor(event.nativeEvent.contentOffset.y / 36.5)
-        console.log(minuteY);
+        // console.log(minuteY);
         if (minuteY < 0) dispatch(setMinute({minute: '00'}))
-        else if (minuteY > 60) dispatch(setMinute({minute: '60'}))
+        else if (minuteY > 59) dispatch(setMinute({minute: '59'}))
         else if (minuteY < 10) dispatch(setMinute({minute: '0'+minuteY}))
         else dispatch(setMinute({minute: minuteY}))
         
@@ -32,9 +32,9 @@ const TimePicker = () => {
 
     const handleSeconds = (event: any) => {
         secondY = Math.floor(event.nativeEvent.contentOffset.y / 36.5)
-        console.log(secondY);
+        // console.log(secondY);
         if (secondY < 0) dispatch(setSecond({second: '00'}))
-        else if (secondY > 60) dispatch(setSecond({second: '60'}))
+        else if (secondY > 59) dispatch(setSecond({second: '59'}))
         else if (secondY < 10) dispatch(setSecond({second: '0'+secondY}))
         else dispatch(setSecond({second: secondY}))
     }
