@@ -1,25 +1,54 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button } from 'react-native';
 import { RootStackParamList } from '../../App';
 import NapnapModal from '../components/NapanpModal';
-import { Spacer } from '../utils/UtilFunctions';
+import { Clickable, Spacer } from '../utils/UtilFunctions';
 import MusicContainer from '../components/MusicContainer';
 import { useAppDispatch, useAppSelector } from '../redux/hook';
-import { setMinute, setTimer } from '../redux/slices/timer';
+import { minusSecond, setMinute, setTimer } from '../redux/slices/timer';
+import BackgroundTimer from 'react-native-background-timer';
+import TextCircleButton from '../components/TextCircleButton';
 
-type navProps = NativeStackScreenProps<RootStackParamList, "Home">;
-
-const HomeScreen = ({ route, navigation }: navProps) => {
+const HomeScreen = () => {
     const timer = useAppSelector(state => state.timer.timer);
     const dispatch = useAppDispatch()
     
-    const [isModalVisible, setModalVisible] = useState(false)
-    const [isPlay, setPlay] = useState(false)
+    const [ isModalVisible, setModalVisible ] = useState(false)
+    const [ onPlay, setPlay ] = useState(false)
+    const [ isSetTimer, setIsSetTimer ] = useState(false)
+
+    /** playing */ 
+    useEffect(() => {
+        if (onPlay) startTimer();
+        else BackgroundTimer.stopBackgroundTimer();
+        return () => {
+            BackgroundTimer.stopBackgroundTimer();
+        }
+    }, [onPlay])
+
+    const startTimer = () => {
+        BackgroundTimer.runBackgroundTimer(() => {
+            dispatch(minusSecond())
+        }, 1000)
+    }
+
+    /** stop */
+    useEffect(() => {
+        if (+timer.second === 0) {
+            BackgroundTimer.stopBackgroundTimer()
+            // TODO : 타이머 종료음 울리기
+            setPlay(false)
+            setIsSetTimer(false)
+        }
+    }, [+timer.second])
+
+    
 
     return (
+        
         <Background>
             <AlramContainer>
                 <AlramIcon source={require('../assets/images/ic_alram.png')}/>
@@ -35,41 +64,65 @@ const HomeScreen = ({ route, navigation }: navProps) => {
 
             <CatImage source={require('../assets/images/cat.png')}/>
             
-            <ButtonContainer>
-                <Clickable>
-                    <CircleButton source={require('../assets/images/btn_start.png')}/>
-                </Clickable>
+            
+            <ButtonContainer style={{opacity: isSetTimer ? 100 : 0}}>
+                <TextCircleButton label='취소' onPress={() => {}}/>
                 <Spacer/>
-                <Clickable onPress={() => {
-                    if (isPlay == false) setPlay(true)
-                    else setPlay(false)
-                }}>
-                    <CircleButton source={
-                        isPlay ? require('../assets/images/btn_pause.png') 
-                        : require('../assets/images/btn_start.png')
-                        }/>
-                </Clickable>
+                <PlayButton onPlay={onPlay} setPlay={setPlay} playable={isSetTimer}/>
             </ButtonContainer>
             
-            <MusicContainer
-                iconPath={require('../assets/images/ic_music.png')}
-                title='배경음악' 
-                selectedItem='추적추적 빗소리'/>
+            <BackgroundMusicContainer/>
             <View style={{height: 8}}/>
-            <MusicContainer
-                iconPath={require('../assets/images/ic_notification.png')}
-                title='타이머 종료음' 
-                selectedItem='알람음 1'/>
+            <TimerStopMusicContainer/>
 
             <View style={{height: 60}}/>
 
             <NapnapModal 
                 isModalVisible={isModalVisible}
                 setModalVisible={setModalVisible}
+                setIsSetTimer={setIsSetTimer}
             />
             
         </Background>
     )
+}
+
+type PlayButtonType = {
+    onPlay: boolean,
+    setPlay: any,
+    playable: boolean
+}
+
+const PlayButton = ({onPlay, setPlay, playable}: PlayButtonType) => {
+    return (
+        <Clickable onPress={() => {
+            setPlay(!onPlay)
+            }}
+            disabled={playable ? false : true}>
+            <CircleButton source={
+                onPlay ? require('../assets/images/btn_pause_re.png') 
+                : require('../assets/images/btn_start.png')
+                }/>
+        </Clickable>
+    );
+}
+
+const BackgroundMusicContainer = () => {
+    return (
+        <MusicContainer
+            iconPath={require('../assets/images/ic_music.png')}
+            title='배경음악' 
+            selectedItem='추적추적 빗소리'/>
+    );
+}
+
+const TimerStopMusicContainer = () => {
+    return (
+        <MusicContainer
+            iconPath={require('../assets/images/ic_notification.png')}
+            title='타이머 종료음' 
+            selectedItem='알람음 1'/>
+    );
 }
 
 const AlramContainer = styled.View`
@@ -98,10 +151,6 @@ const Background = styled.SafeAreaView`
 const SubTitle = styled.Text`
     font-size: 20px;
     color: ${colors.text_gray_100};
-`
-
-const Clickable = styled.TouchableOpacity`
-    
 `
 
 const TimeTitle = styled.Text`
