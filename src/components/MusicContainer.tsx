@@ -47,7 +47,7 @@ const Container = styled.View`
 const Title = styled.Text`
     font-size: 14px;
     color: ${colors.text_gray_100};
-    margin-left: 6;
+    margin-left: 6px;
 `
 
 const SelectedItem = styled.Text`
