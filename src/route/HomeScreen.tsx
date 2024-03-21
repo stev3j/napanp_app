@@ -8,7 +8,7 @@ import NapnapModal from '../components/NapanpModal';
 import { Clickable, Spacer } from '../utils/UtilFunctions';
 import MusicContainer from '../components/MusicContainer';
 import { useAppDispatch, useAppSelector } from '../redux/hook';
-import { minusSecond, setMinute, setTimer } from '../redux/slices/timer';
+import { minusMinute, minusSecond, resetTimer, setMinute, setSecond, setTimer } from '../redux/slices/timer';
 import BackgroundTimer from 'react-native-background-timer';
 import TextCircleButton from '../components/TextCircleButton';
 
@@ -20,9 +20,31 @@ const HomeScreen = () => {
     const [ onPlay, setPlay ] = useState(false)
     const [ isSetTimer, setIsSetTimer ] = useState(false)
 
+    /** stop */
+    useEffect(() => {
+        console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
+        
+        if (+timer.second == 0) {
+            if (+timer.minute > 0) {
+                setTimeout(() => {
+                    dispatch(minusMinute())
+                    dispatch(setSecond({second: '60'}))
+                }, 1000);
+            } else {
+                 BackgroundTimer.stopBackgroundTimer()
+                // TODO : 타이머 종료음 울리기
+                setPlay(false)
+                setIsSetTimer(false)
+            }
+        }
+    }, [+timer.second])
+
     /** playing */ 
     useEffect(() => {
-        if (onPlay) startTimer();
+        if (onPlay) {
+            startTimer();
+            // TODO : 백그라운드 음악 재생시키기
+        }
         else BackgroundTimer.stopBackgroundTimer();
         return () => {
             BackgroundTimer.stopBackgroundTimer();
@@ -35,20 +57,11 @@ const HomeScreen = () => {
         }, 1000)
     }
 
-    /** stop */
-    useEffect(() => {
-        if (+timer.second === 0) {
-            BackgroundTimer.stopBackgroundTimer()
-            // TODO : 타이머 종료음 울리기
-            setPlay(false)
-            setIsSetTimer(false)
-        }
-    }, [+timer.second])
+    
 
     
 
     return (
-        
         <Background>
             <AlramContainer>
                 <AlramIcon source={require('../assets/images/ic_alram.png')}/>
@@ -66,7 +79,10 @@ const HomeScreen = () => {
             
             
             <ButtonContainer style={{opacity: isSetTimer ? 100 : 0}}>
-                <TextCircleButton label='취소' onPress={() => {}}/>
+                <TextCircleButton label='취소' onPress={() => {
+                    dispatch(resetTimer())
+                    setIsSetTimer(false)
+                    }}/>
                 <Spacer/>
                 <PlayButton onPlay={onPlay} setPlay={setPlay} playable={isSetTimer}/>
             </ButtonContainer>
@@ -90,7 +106,7 @@ const HomeScreen = () => {
 type PlayButtonType = {
     onPlay: boolean,
     setPlay: any,
-    playable: boolean
+    playable: boolean,
 }
 
 const PlayButton = ({onPlay, setPlay, playable}: PlayButtonType) => {

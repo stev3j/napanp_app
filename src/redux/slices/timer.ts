@@ -35,10 +35,28 @@ const timerSlice = createSlice({
       } else {
         state.timer.second = (+state.timer.second - 1).toString()
       }
+    },
+    minusMinute: (state) => {
+      if (+state.timer.minute <= 10) {
+        state.timer.minute = '0'+(+state.timer.minute - 1).toString()
+      } else {
+        state.timer.minute = (+state.timer.minute - 1).toString()
+      }
+    },
+    resetTimer: (state) => {
+      state.timer.minute = '00'
+      state.timer.second = '00'
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setTimer, setMinute, setSecond, minusSecond } = timerSlice.actions;
+export const { 
+  setTimer, 
+  setMinute,
+  setSecond,
+  minusSecond,
+  minusMinute,
+  resetTimer
+} = timerSlice.actions;
 export default timerSlice.reducer
