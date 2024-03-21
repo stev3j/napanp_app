@@ -11,16 +11,17 @@ import { setTimer } from '../redux/slices/timer';
 type NapnapModalType = {
     isModalVisible: boolean
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+    setIsSetTimer: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const NapnapModal = (props: NapnapModalType) => {
+const NapnapModal = ({isModalVisible, setModalVisible, setIsSetTimer}: NapnapModalType) => {
     const dispatch = useAppDispatch()
 
     return (
         <Modal
             animationType="slide"
             transparent={true}
-            visible={props.isModalVisible}
+            visible={isModalVisible}
             >
             <WholeScreen>
                 <ModalContainer>
@@ -28,13 +29,14 @@ const NapnapModal = (props: NapnapModalType) => {
                         <TouchableOpacity onPress={() => {
                             /** TODO: 이거 맞나? */
                             dispatch(setTimer({minute: '00', second: '00'}))
-                            props.setModalVisible(false)
+                            setModalVisible(false)
                         }}>
                             <CloseText>닫기</CloseText>
                         </TouchableOpacity>
                         <Spacer/>
                         <TouchableOpacity onPress={() => {
-                            props.setModalVisible(false)
+                            setModalVisible(false)
+                            setIsSetTimer(true)
                         }}>
                             <SetText>설정</SetText>
                         </TouchableOpacity>
