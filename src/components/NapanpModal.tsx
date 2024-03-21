@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, TouchableOpacity, } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Spacer } from '../utils/UtilFunctions';
 import TimePicker from './TimePicker';
-import { useAppDispatch } from '../redux/hook';
+import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { setTimer } from '../redux/slices/timer';
 
 
@@ -15,7 +15,21 @@ type NapnapModalType = {
 }
 
 const NapnapModal = ({isModalVisible, setModalVisible, setIsSetTimer}: NapnapModalType) => {
+    const timer = useAppSelector(state => state.timer.timer);
     const dispatch = useAppDispatch()
+    const [ isZero, setIsZero ] = useState(true)
+
+    useEffect(() => {
+        if (+timer.minute > 0 || +timer.second > 0) setIsZero(false)
+        else setIsZero(true)
+    })
+
+    const SetText = styled.Text`
+        margin-top: 20px;
+        margin-right: 20px;
+        font-size: 18px;
+        color: ${isZero ? colors.primary_disabled : colors.primary};
+    `
 
     return (
         <Modal
@@ -37,7 +51,8 @@ const NapnapModal = ({isModalVisible, setModalVisible, setIsSetTimer}: NapnapMod
                         <TouchableOpacity onPress={() => {
                             setModalVisible(false)
                             setIsSetTimer(true)
-                        }}>
+                        }}
+                            disabled={isZero}>
                             <SetText>설정</SetText>
                         </TouchableOpacity>
                     </TextContainer>
@@ -73,11 +88,6 @@ const CloseText = styled.Text`
     color: ${colors.text_gray_100};
 `
 
-const SetText = styled.Text`
-    margin-top: 20px;
-    margin-right: 20px;
-    font-size: 18px;
-    color: ${colors.primary};
-`
+
 
 export default NapnapModal;
