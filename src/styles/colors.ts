@@ -7,7 +7,8 @@ const colors = {
     container_gray_700: '#2C2C2C',
     background_gray_900: '#191919',
 
-    primary: '#F1D160'
+    primary: '#F1D160',
+    primary_disabled: '#85753D'
 }
 
 export default colors;
