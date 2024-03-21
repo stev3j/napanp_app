@@ -28,10 +28,17 @@ const timerSlice = createSlice({
     },
     setSecond: (state, action) => {
       state.timer.second = action.payload.second
+    },
+    minusSecond: (state) => {
+      if (+state.timer.second <= 10) {
+        state.timer.second = '0'+(+state.timer.second - 1).toString()
+      } else {
+        state.timer.second = (+state.timer.second - 1).toString()
+      }
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setTimer, setMinute, setSecond } = timerSlice.actions;
+export const { setTimer, setMinute, setSecond, minusSecond } = timerSlice.actions;
 export default timerSlice.reducer
