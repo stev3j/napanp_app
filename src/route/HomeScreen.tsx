@@ -24,12 +24,18 @@ const HomeScreen = () => {
     useEffect(() => {
         console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
         
-        if (+timer.second == 0) {
+        if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
             if (+timer.minute > 0) {
-                setTimeout(() => {
+                if (+timer.second == 0) {
+                    setTimeout(() => {
+                        dispatch(minusMinute())
+                        dispatch(setSecond({second: '60'}))
+                    }, 1000);
+                } else {
                     dispatch(minusMinute())
-                    dispatch(setSecond({second: '60'}))
-                }, 1000);
+                    dispatch(setSecond({second: '59'}))
+                }
+                
             } else {
                  BackgroundTimer.stopBackgroundTimer()
                 // TODO : 타이머 종료음 울리기
@@ -56,10 +62,6 @@ const HomeScreen = () => {
             dispatch(minusSecond())
         }, 1000)
     }
-
-    
-
-    
 
     return (
         <Background>
