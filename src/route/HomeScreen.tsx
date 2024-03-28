@@ -23,45 +23,13 @@ const HomeScreen = () => {
     /** stop */
     useEffect(() => {
         console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
-        
-        if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
-            if (+timer.minute > 0) {
-                if (+timer.second == 0) {
-                    setTimeout(() => {
-                        dispatch(minusMinute())
-                        dispatch(setSecond({second: '60'}))
-                    }, 1000);
-                } else {
-                    dispatch(minusMinute())
-                    dispatch(setSecond({second: '59'}))
-                }
-                
-            } else {
-                 BackgroundTimer.stopBackgroundTimer()
-                // TODO : 타이머 종료음 울리기
-                setPlay(false)
-                setIsSetTimer(false)
-            }
-        }
+        handlingTimerStop(timer, dispatch, setPlay, setIsSetTimer)
     }, [+timer.second])
 
     /** playing */ 
     useEffect(() => {
-        if (onPlay) {
-            startTimer();
-            // TODO : 백그라운드 음악 재생시키기
-        }
-        else BackgroundTimer.stopBackgroundTimer();
-        return () => {
-            BackgroundTimer.stopBackgroundTimer();
-        }
+        handlingTimerStart(onPlay, dispatch)
     }, [onPlay])
-
-    const startTimer = () => {
-        BackgroundTimer.runBackgroundTimer(() => {
-            dispatch(minusSecond())
-        }, 1000)
-    }
 
     return (
         <Background>
@@ -103,6 +71,48 @@ const HomeScreen = () => {
             
         </Background>
     )
+}
+
+const handlingTimerStop = (timer: any, dispatch: any, setPlay: any, setIsSetTimer: any) => {
+    if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
+        if (+timer.minute > 0) {
+            if (+timer.second == 0) {
+                setTimeout(() => {
+                    dispatch(minusMinute())
+                    dispatch(setSecond({second: '60'}))
+                }, 1000);
+            } else {
+                dispatch(minusMinute())
+                dispatch(setSecond({second: '59'}))
+            }
+            
+        } else {
+                BackgroundTimer.stopBackgroundTimer()
+            // TODO : 타이머 종료음 울리기
+            setPlay(false)
+            setIsSetTimer(false)
+        }
+    }
+}
+
+const handlingTimerStart = (onPlay: any, dispatch: any) => {
+
+    const startTimer = () => {
+        BackgroundTimer.runBackgroundTimer(() => {
+            dispatch(minusSecond())
+        }, 1000)
+    }
+
+    if (onPlay) {
+        startTimer();
+        // TODO : 백그라운드 음악 재생시키기
+    }
+    else BackgroundTimer.stopBackgroundTimer();
+    return () => {
+        BackgroundTimer.stopBackgroundTimer();
+    }
+
+    
 }
 
 type PlayButtonType = {
