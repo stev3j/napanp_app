@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
-import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button, Alert } from 'react-native';
 import { RootStackParamList } from '../../App';
 import NapnapModal from '../components/NapanpModal';
 import { Clickable, Spacer } from '../utils/UtilFunctions';
@@ -38,9 +38,11 @@ const HomeScreen = () => {
                 <SubTitle>시간을 정해주세요</SubTitle>
             </AlramContainer>
             
-            <Clickable onPress={() => {
-                dispatch(setTimer({minute: '00', second: '00'}))
-                setModalVisible(true)
+            <Clickable 
+                disabled={isSetTimer ? true : false}
+                onPress={() => {
+                    dispatch(setTimer({minute: '00', second: '00'}))
+                    setModalVisible(true)
                 }}>
                 <TimeTitle>{timer.minute+':'+timer.second}</TimeTitle>
             </Clickable>
@@ -50,8 +52,7 @@ const HomeScreen = () => {
             
             <ButtonContainer style={{opacity: isSetTimer ? 100 : 0}}>
                 <TextCircleButton label='취소' onPress={() => {
-                    dispatch(resetTimer())
-                    setIsSetTimer(false)
+                    cencleAlert(dispatch, setIsSetTimer)
                     }}/>
                 <Spacer/>
                 <PlayButton onPlay={onPlay} setPlay={setPlay} playable={isSetTimer}/>
@@ -93,6 +94,23 @@ const handlingTimerStop = (timer: any, dispatch: any, setPlay: any, setIsSetTime
             setIsSetTimer(false)
         }
     }
+}
+
+const cencleAlert = (dispatch: any, setIsSetTimer: any) => {
+    Alert.alert(
+        "정말 타이머를 초기화 하시겠습니까?",
+        "", [{
+            text: "아니요",
+            style: "cancel"
+        }, {
+            text: "네",
+            onPress: () => {
+                dispatch(resetTimer())
+                setIsSetTimer(false)
+            },
+        },
+        ], { cancelable: false }
+    );
 }
 
 const handlingTimerStart = (onPlay: any, dispatch: any) => {
