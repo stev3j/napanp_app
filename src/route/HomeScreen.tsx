@@ -5,7 +5,7 @@ import colors from '../styles/colors';
 import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button, Alert } from 'react-native';
 import { RootStackParamList } from '../../App';
 import NapnapModal from '../components/NapanpModal';
-import { Clickable, Spacer } from '../utils/UtilFunctions';
+import { Background, Clickable, Spacer } from '../utils/UtilFunctions';
 import MusicContainer from '../components/MusicContainer';
 import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { minusMinute, minusSecond, resetTimer, setMinute, setSecond, setTimer } from '../redux/slices/timer';
@@ -203,11 +203,6 @@ const CatImage = styled.Image`
     margin-top: 20px;
     width: 240px;
     height: 220px;
-`
-const Background = styled.SafeAreaView`
-    flex: 1;
-    align-items: center;
-    background-color: ${colors.background_gray_900};
 `
 
 const SubTitle = styled.Text`
