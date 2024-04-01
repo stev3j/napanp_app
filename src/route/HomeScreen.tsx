@@ -14,6 +14,7 @@ import Sound from 'react-native-sound';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import RootStackParamList from '../navigation/RootStackParamList';
+import ImagePaths from '../assets/images/ImagePaths';
 
 
 const HomeScreen = () => {
@@ -55,26 +56,12 @@ const HomeScreen = () => {
     return (
         <Background>
             <AlarmTitle/>
-            <Clickable 
-                disabled={isSetTimer ? true : false}
-                onPress={() => {
-                    dispatch(setTimer({minute: '00', second: '00'}))
-                    setModalVisible(true)
-                }}>
-                <TimeTitle>{timer.minute+':'+timer.second}</TimeTitle>
-            </Clickable>
+            <Time isSetTimer={isSetTimer} dispatch={dispatch} setModalVisible={setModalVisible} timer={timer}/>
+            
+            <CatImage source={ImagePaths.BasicCat}/>
+            
+            <Buttons isSetTimer={isSetTimer} dispatch={dispatch} setIsSetTimer={setIsSetTimer} onPlay={onPlay} setPlay={setPlay} />
 
-            <CatImage source={require('../assets/images/cat.png')}/>
-            
-            
-            <ButtonContainer style={{opacity: isSetTimer ? 100 : 0}}>
-                <TextCircleButton label='취소' onPress={() => {
-                    cencleAlert(dispatch, setIsSetTimer)
-                    }}/>
-                <Spacer/>
-                <PlayButton onPlay={onPlay} setPlay={setPlay} playable={isSetTimer}/>
-            </ButtonContainer>
-            
             <BackgroundMusicContainer/>
             <View style={{height: 8}}/>
             <TimerStopMusicContainer/>
@@ -88,6 +75,48 @@ const HomeScreen = () => {
             />
             
         </Background>
+    )
+}
+
+export default HomeScreen;
+
+interface TimeType {
+    isSetTimer: any
+    dispatch: any
+    setModalVisible: any
+    timer: any
+}
+
+const Time = ({isSetTimer, dispatch, setModalVisible, timer}: TimeType) => {
+    return (
+        <Clickable 
+            disabled={isSetTimer ? true : false}
+            onPress={() => {
+                dispatch(setTimer({minute: '00', second: '00'}))
+                setModalVisible(true)
+            }}>
+            <TimeTitle>{timer.minute+':'+timer.second}</TimeTitle>
+        </Clickable>
+    )
+}
+
+interface ButtonsType {
+    isSetTimer: any
+    dispatch: any
+    setIsSetTimer: any
+    onPlay: any,
+    setPlay: any
+}
+
+const Buttons = ({isSetTimer, dispatch, setIsSetTimer, onPlay, setPlay}: ButtonsType) => {
+    return (
+        <ButtonContainer style={{opacity: isSetTimer ? 100 : 0}}>
+            <TextCircleButton label='취소' onPress={() => {
+                cencleAlert(dispatch, setIsSetTimer)
+                }}/>
+            <Spacer/>
+            <PlayButton onPlay={onPlay} setPlay={setPlay} playable={isSetTimer}/>
+        </ButtonContainer>
     )
 }
 
@@ -152,13 +181,11 @@ const handlingTimerStart = (onPlay: any, dispatch: any) => {
     if (onPlay) {
         startTimer();
         // TODO : 백그라운드 음악 재생시키기
-    }
-    else BackgroundTimer.stopBackgroundTimer();
+    } else BackgroundTimer.stopBackgroundTimer();
+
     return () => {
         BackgroundTimer.stopBackgroundTimer();
     }
-
-    
 }
 
 type PlayButtonType = {
@@ -240,4 +267,3 @@ const ButtonContainer = styled.View`
     margin-right: 55px;
 `
 
-export default HomeScreen;
