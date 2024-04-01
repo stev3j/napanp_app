@@ -18,3 +18,19 @@ export const Background = styled.SafeAreaView`
     align-items: center;
     background-color: ${colors.background_gray_900};
 `
+
+
+/** -------------------------- */
+
+export const ButtonContainer = styled.View`
+    flex: 1;
+    margin-top: 70px;
+    flex-direction: row;
+    margin-left: 55px;
+    margin-right: 55px;
+`
+
+export const CircleButton = styled.Image`
+    width: 60px;
+    height: 60px;
+`

@@ -1,8 +1,8 @@
 import styled from "styled-components/native";
-import colors from "../styles/colors";
-import { Clickable } from "../utils/UtilFunctions";
+import colors from "../../styles/colors";
+import { Clickable } from "../../utils/UtilFunctions";
 
-type TextCircleButtonType = {
+interface TextCircleButtonType {
     label: string
     onPress: () => void
 }
@@ -18,6 +18,8 @@ const TextCircleButton = ({label, onPress}: TextCircleButtonType) => {
     );
 }
 
+export default TextCircleButton;
+
 const Frame = styled.View`
     border-radius: 100px;
     width: 60px;
@@ -31,5 +33,3 @@ const Label = styled.Text`
     font-size: 14px;
     color: ${colors.white};
 `
-
-export default TextCircleButton;

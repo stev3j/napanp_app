@@ -4,17 +4,19 @@ import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button, Alert } from 'react-native';
 import NapnapModal from '../components/NapanpModal';
-import { Background, Clickable, Spacer } from '../utils/UtilFunctions';
+import { Background, ButtonContainer, CircleButton, Clickable, Spacer } from '../utils/UtilFunctions';
 import MusicContainer from '../components/MusicContainer';
 import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { minusMinute, minusSecond, resetTimer, setMinute, setSecond, setTimer } from '../redux/slices/timer';
 import BackgroundTimer from 'react-native-background-timer';
-import TextCircleButton from '../components/TextCircleButton';
+import TextCircleButton from '../assets/buttons/TextCircleButton';
 import Sound from 'react-native-sound';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import RootStackParamList from '../navigation/RootStackParamList';
 import ImagePaths from '../assets/images/ImagePaths';
+import PlayButton from '../assets/buttons/PlayButton';
+import TerminateButton from '../assets/buttons/TerminateButton';
 
 
 const HomeScreen = () => {
@@ -112,13 +114,14 @@ const Buttons = ({isSetTimer, dispatch, setIsSetTimer, onPlay, setPlay}: Buttons
     return (
         <ButtonContainer style={{opacity: isSetTimer ? 100 : 0}}>
             <TextCircleButton label='취소' onPress={() => {
-                cencleAlert(dispatch, setIsSetTimer)
+                cencleAlert(dispatch, setIsSetTimer, setPlay)
                 }}/>
             <Spacer/>
-            <PlayButton onPlay={onPlay} setPlay={setPlay} playable={isSetTimer}/>
+            <PlayButton onPlay={onPlay} playable={isSetTimer} onPress={() => {setPlay(!onPlay)}}/>
         </ButtonContainer>
     )
 }
+
 
 export const AlarmTitle = () => {
     return (
@@ -153,7 +156,7 @@ const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: 
     }
 }
 
-const cencleAlert = (dispatch: any, setIsSetTimer: any) => {
+const cencleAlert = (dispatch: any, setIsSetTimer: any, setPlay: any) => {
     Alert.alert(
         "정말 타이머를 초기화 하시겠습니까?",
         "", [{
@@ -162,6 +165,7 @@ const cencleAlert = (dispatch: any, setIsSetTimer: any) => {
         }, {
             text: "네",
             onPress: () => {
+                setPlay(false)
                 dispatch(resetTimer())
                 setIsSetTimer(false)
             },
@@ -194,19 +198,7 @@ type PlayButtonType = {
     playable: boolean,
 }
 
-const PlayButton = ({onPlay, setPlay, playable}: PlayButtonType) => {
-    return (
-        <Clickable onPress={() => {
-            setPlay(!onPlay)
-            }}
-            disabled={playable ? false : true}>
-            <CircleButton source={
-                onPlay ? require('../assets/images/btn_pause_re.png') 
-                : require('../assets/images/btn_start.png')
-                }/>
-        </Clickable>
-    );
-}
+
 
 const BackgroundMusicContainer = () => {
     return (
@@ -254,16 +246,6 @@ const TimeTitle = styled.Text`
     color: ${colors.text_gray_100};
 `
 
-const CircleButton = styled.Image`
-    width: 60px;
-    height: 60px;
-`
 
-const ButtonContainer = styled.View`
-    flex: 1;
-    margin-top: 70px;
-    flex-direction: row;
-    margin-left: 55px;
-    margin-right: 55px;
-`
+
 
