@@ -3,7 +3,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Modal, View, Text, TouchableOpacity, SafeAreaView, Image, Button, Alert } from 'react-native';
-import { RootStackParamList } from '../../App';
 import NapnapModal from '../components/NapanpModal';
 import { Background, Clickable, Spacer } from '../utils/UtilFunctions';
 import MusicContainer from '../components/MusicContainer';
@@ -12,9 +11,14 @@ import { minusMinute, minusSecond, resetTimer, setMinute, setSecond, setTimer } 
 import BackgroundTimer from 'react-native-background-timer';
 import TextCircleButton from '../components/TextCircleButton';
 import Sound from 'react-native-sound';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import RootStackParamList from '../navigation/RootStackParamList';
 
 
 const HomeScreen = () => {
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
     const timer = useAppSelector(state => state.timer.timer);
     const dispatch = useAppDispatch()
     
@@ -39,7 +43,8 @@ const HomeScreen = () => {
     /** stop */
     useEffect(() => {
         console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
-        handlingTimerStop(timer, dispatch, setPlay, setIsSetTimer)
+        handlingTimerStop(timer, dispatch, onPlay, setPlay, setIsSetTimer, navigation)
+        
     }, [+timer.second])
 
     /** playing */ 
@@ -49,11 +54,7 @@ const HomeScreen = () => {
 
     return (
         <Background>
-            <AlramContainer>
-                <AlramIcon source={require('../assets/images/ic_alram.png')}/>
-                <SubTitle>시간을 정해주세요</SubTitle>
-            </AlramContainer>
-            
+            <AlarmTitle/>
             <Clickable 
                 disabled={isSetTimer ? true : false}
                 onPress={() => {
@@ -90,7 +91,16 @@ const HomeScreen = () => {
     )
 }
 
-const handlingTimerStop = (timer: any, dispatch: any, setPlay: any, setIsSetTimer: any) => {
+export const AlarmTitle = () => {
+    return (
+        <AlramContainer>
+            <AlramIcon source={require('../assets/images/ic_alram.png')}/>
+            <SubTitle>시간을 정해주세요</SubTitle>
+        </AlramContainer>
+    );
+}
+
+const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: any, setIsSetTimer: any, navigation: any) => {
     if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
         if (+timer.minute > 0) {
             if (+timer.second == 0) {
@@ -103,11 +113,13 @@ const handlingTimerStop = (timer: any, dispatch: any, setPlay: any, setIsSetTime
                 dispatch(setSecond({second: '59'}))
             }
             
-        } else {
-                BackgroundTimer.stopBackgroundTimer()
-            // TODO : 타이머 종료음 울리기
+        } else if (onPlay) {
+            console.log('종료!');
+            BackgroundTimer.stopBackgroundTimer()
+            navigation.navigate('Finish')
             setPlay(false)
             setIsSetTimer(false)
+            // TODO : 타이머 종료음 울리기
         }
     }
 }

@@ -7,11 +7,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import HomeScreen from './src/route/HomeScreen';
-
-export type RootStackParamList = {
-  Home: undefined;
-  TimeModal: undefined;
-}
+import FinishScreen from './src/route/FinishScreen';
+import RootStackParamList from './src/navigation/RootStackParamList';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -25,6 +22,7 @@ function App(): React.JSX.Element {
           >
           <RootStack.Group>
             <RootStack.Screen name="Home" component={HomeScreen}/>
+            <RootStack.Screen name="Finish" component={FinishScreen}/>
           </RootStack.Group>
         </RootStack.Navigator>
       </NavigationContainer>
