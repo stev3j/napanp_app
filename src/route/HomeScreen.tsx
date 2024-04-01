@@ -11,6 +11,8 @@ import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { minusMinute, minusSecond, resetTimer, setMinute, setSecond, setTimer } from '../redux/slices/timer';
 import BackgroundTimer from 'react-native-background-timer';
 import TextCircleButton from '../components/TextCircleButton';
+import Sound from 'react-native-sound';
+
 
 const HomeScreen = () => {
     const timer = useAppSelector(state => state.timer.timer);
@@ -19,6 +21,20 @@ const HomeScreen = () => {
     const [ isModalVisible, setModalVisible ] = useState(false)
     const [ onPlay, setPlay ] = useState(false)
     const [ isSetTimer, setIsSetTimer ] = useState(false)
+
+    const rainAudioPath = '../assets/audios/994224335CFBBFF416.mp3'
+
+    /** background music */
+    // useEffect(() => {
+    //     Sound.setCategory('Playback');
+    //     const audio = new Sound(rainAudioPath, Sound.MAIN_BUNDLE, error => {
+    //         if (error) {
+    //             console.log('Error playing audio:', error);
+    //             return;
+    //         }
+    //         audio.play();
+    //     });
+    // }, []);
 
     /** stop */
     useEffect(() => {
