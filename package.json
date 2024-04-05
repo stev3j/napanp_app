@@ -15,6 +15,7 @@
     "@react-navigation/stack": "^6.3.27",
     "@reduxjs/toolkit": "^2.2.1",
     "@types/react-native-background-timer": "^2.0.2",
+    "lottie-react-native": "^6.7.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-background-timer": "^2.4.1",
