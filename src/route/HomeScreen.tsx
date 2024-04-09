@@ -53,7 +53,7 @@ const HomeScreen = () => {
             <Time isSetTimer={isSetTimer} dispatch={dispatch} setModalVisible={setModalVisible} timer={timer}/>
             
             {/* <CatImage source={ImagePaths.BasicCat}/> */}
-            <LottieView style={{marginTop: 20, width: 230, height: 230}} source={AnimationPaths.Cat} autoPlay loop />
+            <LottieView style={{marginTop: 20, width: 230, height: 230}} source={AnimationPaths.SleepyCat} autoPlay loop />
             
             <Buttons isSetTimer={isSetTimer} dispatch={dispatch} setIsSetTimer={setIsSetTimer} onPlay={onPlay} setPlay={setPlay} />
 
