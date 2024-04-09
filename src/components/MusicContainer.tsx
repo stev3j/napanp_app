@@ -7,6 +7,7 @@ import TimePicker from './TimePicker';
 
 
 type MusicContainerType = {
+    style?: any
     iconPath: any
     title: string
     selectedItem: string
@@ -15,7 +16,7 @@ type MusicContainerType = {
 const MusicContainer = (props: MusicContainerType) => {
 
     return (
-        <PaddingHorizontal40>
+        <PaddingHorizontal40 style={props.style}>
             <Container>
                 <Icon source={props.iconPath}/>
                 <Title>{props.title}</Title>
