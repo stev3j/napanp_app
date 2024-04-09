@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Background, ButtonContainer, Spacer } from "../utils/UtilFunctions";
 import { AlarmTitle } from "./HomeScreen";
 import RootStackParamList from "../navigation/RootStackParamList";
@@ -9,16 +9,32 @@ import ImagePaths from "../assets/images/ImagePaths";
 import TerminateButton from "../assets/buttons/TerminateButton";
 import ReloadButton from "../assets/buttons/ReloadButton";
 import { Button } from "react-native";
+import Sound from "react-native-sound";
+import { useEffect, useRef } from "react";
+import AudioPaths from "../assets/audios/AudioPaths";
 
 const FinishScreen = () => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+    const alarmSound = useRef<Sound>(
+        new Sound(AudioPaths.AlarmWav, '', error => {
+            if (error) {
+                console.error("error", error);
+            }
+        })
+    );
+
+    useEffect(() => {
+        console.log("알람이 울리고 있어요!");
+        alarmSound.current.setNumberOfLoops(-1).play()
+    })
 
     return (
         <Background>
             <AlarmTitle/>
             <Title>일어나요!</Title>
             <CatImage source={ImagePaths.WakeupCat}/>
-            <Buttons navigation={navigation}/>
+            <Buttons navigation={navigation} alarmSound={alarmSound}/>
         </Background>
     );
 }
@@ -36,11 +52,14 @@ const CatImage = styled.Image`
     height: 220px;
 `
 
-const Buttons = ({navigation}: ButtonsType) => {
+const Buttons = ({navigation, alarmSound}: ButtonsType) => {
     return (
         <ButtonContainer>
             <ButtonLabelContainer>
-                <TerminateButton onPress={() => {navigation.goBack()}}/>
+                <TerminateButton onPress={() => {
+                    alarmSound.current.stop()
+                    navigation.goBack()
+                    }}/>
                 <ButtonLabel>종료하기</ButtonLabel>
             </ButtonLabelContainer>
             
@@ -67,4 +86,5 @@ const ButtonLabel = styled.Text`
 
 interface ButtonsType {
     navigation: any
+    alarmSound: any
 }
