@@ -2,7 +2,7 @@
 type RootStackParamList = {
   Home: undefined;
   TimeModal: undefined;
-  Finish: undefined
+  Finish: { setPlay: any, setIsSetTimer: any };
 }
 
 export default RootStackParamList;

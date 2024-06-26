@@ -10,11 +10,16 @@ import ReloadButton from "../assets/buttons/ReloadButton";
 import { Button } from "react-native";
 import Sound from "react-native-sound";
 import { useEffect, useRef } from "react";
+import { useAppDispatch } from "../redux/hook";
+import { setTimer } from "../redux/slices/timer";
 // import AudioPaths from "../assets/audios/AudioPaths";
 
-const FinishScreen = () => {
+const FinishScreen = ({ route }: any) => {
+    const { setPlay, setIsSetTimer } = route.params;
+
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+    // Sound
     const alarmSound = useRef<Sound>(
         new Sound('alarm.wav', Sound.MAIN_BUNDLE, error => {
             if (error) {
@@ -26,27 +31,63 @@ const FinishScreen = () => {
     useEffect(() => {
         setTimeout(() => {
             console.log("알람이 울리고 있어요!");
+            // console.log(`Props: ${onPlay} ${isSetTimer}`);
             alarmSound.current.setNumberOfLoops(-1).play()
         }, 1500)
     })
 
+    const dispatch = useAppDispatch()
+
+    // View
     return (
         <Background>
             <AlarmTitle/>
             <Title>일어나요!</Title>
             <CatImage source={ImagePaths.WakeupCat}/>
-            <Buttons navigation={navigation} alarmSound={alarmSound}/>
+            <Buttons onPressStop={() => {
+                alarmSound.current.stop()
+                navigation.goBack()
+            }} onPress5Minute={() => {
+                dispatch(setTimer({minute: '05', second: '00'}))
+                setIsSetTimer(true)
+                setPlay(true)
+                navigation.goBack()
+            }}/>
         </Background>
     );
 }
 
 export default FinishScreen;
 
+interface ButtonsType {
+    onPressStop: () => void,
+    onPress5Minute: () => void
+}
+
+const Buttons = ({onPressStop, onPress5Minute}: ButtonsType) => {
+    return (
+        <ButtonContainer>
+            <ButtonLabelContainer>
+                <TerminateButton onPress={onPressStop}/>
+                   
+                <ButtonLabel>종료하기</ButtonLabel>
+            </ButtonLabelContainer>
+            
+            <Spacer/>
+
+            <ButtonLabelContainer>
+                <ReloadButton onPress={onPress5Minute}/>
+                <ButtonLabel>5분 더</ButtonLabel>
+            </ButtonLabelContainer>
+            
+        </ButtonContainer>
+    )
+}
+
 const AlarmTitle = () => {
     const now = new Date();
     const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
     
-
     return (
         <AlramContainer>
             <AlramIcon source={require('../assets/images/ic_alram.png')}/>
@@ -64,7 +105,7 @@ const foramtTime = (time: string): string => {
         const result = `오전 ${hour}시 ${minute}분`
         return result
     } else {
-        const result = `오후 ${hour}시 ${minute}분`
+        const result = `오후 ${hour-12}시 ${minute}분`
         return result
     }
 }
@@ -98,27 +139,7 @@ const CatImage = styled.Image`
     height: 220px;
 `
 
-const Buttons = ({navigation, alarmSound}: ButtonsType) => {
-    return (
-        <ButtonContainer>
-            <ButtonLabelContainer>
-                <TerminateButton onPress={() => {
-                    alarmSound.current.stop()
-                    navigation.goBack()
-                    }}/>
-                <ButtonLabel>종료하기</ButtonLabel>
-            </ButtonLabelContainer>
-            
-            <Spacer/>
 
-            <ButtonLabelContainer>
-                <ReloadButton onPress={() => {}}/>
-                <ButtonLabel>5분 더</ButtonLabel>
-            </ButtonLabelContainer>
-            
-        </ButtonContainer>
-    )
-}
 
 const ButtonLabelContainer = styled.View`
     align-items: center;
@@ -130,7 +151,3 @@ const ButtonLabel = styled.Text`
     color: ${colors.text_gray_100};
 `
 
-interface ButtonsType {
-    navigation: any
-    alarmSound: any
-}

@@ -54,7 +54,15 @@ const HomeScreen = () => {
     // timer count (second가 줄어들 때마다)
     useEffect(() => {
         console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
-        handlingTimerStop(timer, dispatch, onPlay, setPlay, setIsSetTimer, navigation, rainSound)
+        const finishCallback = () => {
+            console.log('종료!');
+            BackgroundTimer.stopBackgroundTimer()
+            rainSound.current.stop();
+            navigation.navigate('Finish', {setPlay: setPlay, setIsSetTimer: setIsSetTimer})
+            setPlay(false)
+            setIsSetTimer(false)
+        }
+        handlingTimerStop(timer, dispatch, onPlay, finishCallback)
     }, [+timer.second])
 
     // while playing
@@ -122,12 +130,12 @@ const foramtTime = (time: string, timer: Timer): string => {
         const result = `오전 ${hour}시 ${minute}분`
         return result
     } else {
-        const result = `오후 ${hour}시 ${minute}분`
+        const result = `오후 ${hour-12}시 ${minute}분`
         return result
     }
 }
 
-const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: any, setIsSetTimer: any, navigation: any, soundRef: any) => {
+const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, finishCallBack: () => void) => {
     if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
         if (+timer.minute > 0) {
             if (+timer.second == 0) {
@@ -140,12 +148,7 @@ const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: 
                 dispatch(setSecond({second: '59'}))
             }
         } else if (onPlay) {
-            console.log('종료!');
-            BackgroundTimer.stopBackgroundTimer()
-            soundRef.current.stop();
-            navigation.navigate('Finish')
-            setPlay(false)
-            setIsSetTimer(false)
+            finishCallBack()
         };
     }
 }

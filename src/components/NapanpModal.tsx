@@ -41,7 +41,6 @@ const NapnapModal = ({isModalVisible, setModalVisible, setIsSetTimer}: NapnapMod
                 <ModalContainer>
                     <TextContainer>
                         <TouchableOpacity onPress={() => {
-                            /** TODO: 이거 맞나? */
                             dispatch(setTimer({minute: '00', second: '00'}))
                             setModalVisible(false)
                         }}>
