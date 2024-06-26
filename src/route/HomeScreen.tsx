@@ -18,15 +18,20 @@ import LottieView from 'lottie-react-native';
 import AnimationPaths from '../assets/animatinos/AnimationPaths';
 
 const HomeScreen = () => {
+    // navigation
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+    // timer
     const timer = useAppSelector(state => state.timer.timer);
     const dispatch = useAppDispatch()
     
+    // states
     const [ isModalVisible, setModalVisible ] = useState(false)
     const [ onPlay, setPlay ] = useState(false)
     const [ isSetTimer, setIsSetTimer ] = useState(false) 
+    const [ endTime, setEndTime ] = useState('시간을 정해주세요')
 
+    // sound
     const rainSound = useRef<Sound>(
         new Sound('rain.wav', Sound.MAIN_BUNDLE, error => {
             if (error) {
@@ -35,20 +40,32 @@ const HomeScreen = () => {
         })
     );
 
-    /** stop */
+    // endTime 설정
+    useEffect(() => {
+        if (isSetTimer == true) {
+            const now = new Date();
+            const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            setEndTime(foramtTime(formattedTime, timer))
+        } else {
+            setEndTime('시간을 정해주세요')
+        }
+    }, [isSetTimer])
+
+    // timer count (second가 줄어들 때마다)
     useEffect(() => {
         console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
         handlingTimerStop(timer, dispatch, onPlay, setPlay, setIsSetTimer, navigation, rainSound)
     }, [+timer.second])
 
-    /** playing */ 
+    // while playing
     useEffect(() => {
         handlingTimerStart(onPlay, dispatch, rainSound)
     }, [onPlay])
 
+    // Views
     return (
         <Background>
-            <AlarmTitle/>
+            <AlarmTitle endTime={endTime}/>
             <Time isSetTimer={isSetTimer} dispatch={dispatch} setModalVisible={setModalVisible} timer={timer}/>
             
             {/* <CatImage source={ImagePaths.BasicCat}/> */}
@@ -77,6 +94,38 @@ const HomeScreen = () => {
 }
 
 export default HomeScreen;
+
+interface Timer {
+    minute: string;
+    second: string;
+}
+
+// 받아온 시간 포맷하기 (ex. 11:11:30)
+const foramtTime = (time: string, timer: Timer): string => {
+    const array = time.split(':')
+    let hour = +array[0]
+    let minute = +array[1]
+    let second = +array[2]
+
+    second = second + (+timer.second)
+
+    if (second > 59) { minute = minute + 1 }
+
+    minute = minute + (+timer.minute)
+
+    if (minute > 59) {
+        hour = hour + 1
+        minute = minute - 60
+    }
+
+    if (hour < 12) {
+        const result = `오전 ${hour}시 ${minute}분`
+        return result
+    } else {
+        const result = `오후 ${hour}시 ${minute}분`
+        return result
+    }
+}
 
 const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: any, setIsSetTimer: any, navigation: any, soundRef: any) => {
     if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
@@ -159,11 +208,15 @@ interface ButtonsType {
     setPlay: any
 }
 
-export const AlarmTitle = () => {
+interface AlarmTitleProps {
+    endTime: string
+}
+
+const AlarmTitle = ({endTime}: AlarmTitleProps) => {
     return (
         <AlramContainer>
             <AlramIcon source={require('../assets/images/ic_alram.png')}/>
-            <SubTitle>시간을 정해주세요</SubTitle>
+            <SubTitle>{endTime}</SubTitle> 
         </AlramContainer>
     );
 }
