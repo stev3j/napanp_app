@@ -11,13 +11,13 @@ import ReloadButton from "../assets/buttons/ReloadButton";
 import { Button } from "react-native";
 import Sound from "react-native-sound";
 import { useEffect, useRef } from "react";
-import AudioPaths from "../assets/audios/AudioPaths";
+// import AudioPaths from "../assets/audios/AudioPaths";
 
 const FinishScreen = () => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const alarmSound = useRef<Sound>(
-        new Sound(AudioPaths.AlarmWav, '', error => {
+        new Sound('alarm.wav', Sound.MAIN_BUNDLE, error => {
             if (error) {
                 console.error("error", error);
             }
@@ -25,8 +25,10 @@ const FinishScreen = () => {
     );
 
     useEffect(() => {
-        console.log("알람이 울리고 있어요!");
-        alarmSound.current.setNumberOfLoops(-1).play()
+        setTimeout(() => {
+            console.log("알람이 울리고 있어요!");
+            alarmSound.current.setNumberOfLoops(-1).play()
+        }, 1500)
     })
 
     return (

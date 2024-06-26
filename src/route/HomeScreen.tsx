@@ -14,7 +14,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import RootStackParamList from '../navigation/RootStackParamList';
 import ImagePaths from '../assets/images/ImagePaths';
 import PlayButton from '../assets/buttons/PlayButton';
-import AudioPaths from '../assets/audios/AudioPaths';
 import LottieView from 'lottie-react-native';
 import AnimationPaths from '../assets/animatinos/AnimationPaths';
 
@@ -29,7 +28,7 @@ const HomeScreen = () => {
     const [ isSetTimer, setIsSetTimer ] = useState(false) 
 
     const rainSound = useRef<Sound>(
-        new Sound(AudioPaths.RainWav, '', error => {
+        new Sound('rain.wav', Sound.MAIN_BUNDLE, error => {
             if (error) {
                 console.error("error", error);
             }
@@ -39,7 +38,7 @@ const HomeScreen = () => {
     /** stop */
     useEffect(() => {
         console.log(`minute: ${+timer.minute}, second: ${+timer.second}`);
-        handlingTimerStop(timer, dispatch, onPlay, setPlay, setIsSetTimer, navigation)
+        handlingTimerStop(timer, dispatch, onPlay, setPlay, setIsSetTimer, navigation, rainSound)
     }, [+timer.second])
 
     /** playing */ 
@@ -79,7 +78,7 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: any, setIsSetTimer: any, navigation: any) => {
+const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: any, setIsSetTimer: any, navigation: any, soundRef: any) => {
     if (+timer.second == 0 || Number.isNaN(+timer.second-1)) {
         if (+timer.minute > 0) {
             if (+timer.second == 0) {
@@ -94,6 +93,7 @@ const handlingTimerStop = (timer: any, dispatch: any, onPlay: boolean, setPlay: 
         } else if (onPlay) {
             console.log('종료!');
             BackgroundTimer.stopBackgroundTimer()
+            soundRef.current.stop();
             navigation.navigate('Finish')
             setPlay(false)
             setIsSetTimer(false)
@@ -112,12 +112,10 @@ const handlingTimerStart = (onPlay: any, dispatch: any, soundRef: any) => {
         console.log('background sound on!');
         startTimer();
         soundRef.current.setNumberOfLoops(-1).play();
-        // PROBLEM : 음악을 실행시키니, 타이머가 빠르게 작동함 (정확히는 여러개의 타이머가 작동함)
-        // SOLVE : 화면이 다시 랜더링되니, 여러개의 타이머가 작동하는 듯
     } else {
         console.log('background sound off..');
         BackgroundTimer.stopBackgroundTimer();
-        soundRef.current.stop();
+        soundRef.current.stop(); 
     }
 }
 
