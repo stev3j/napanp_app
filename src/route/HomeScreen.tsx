@@ -16,8 +16,15 @@ import ImagePaths from '../assets/images/ImagePaths';
 import PlayButton from '../assets/buttons/PlayButton';
 import LottieView from 'lottie-react-native';
 import AnimationPaths from '../assets/animatinos/AnimationPaths';
+import { LogBox, Platform } from 'react-native';
+import AudioPaths from '../assets/audios/AudioPaths';
 
 const HomeScreen = () => {
+    LogBox.ignoreLogs([
+        '`new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.',
+        '`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.',
+    ]);
+
     // navigation
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -33,11 +40,19 @@ const HomeScreen = () => {
 
     // sound
     const rainSound = useRef<Sound>(
+        // ## iOS
         new Sound('rain.wav', Sound.MAIN_BUNDLE, error => {
             if (error) {
                 console.error("error", error);
             }
         })
+        
+        // ## Android
+        // new Sound(AudioPaths.rain, '', error => {
+        //     if (error) {
+        //         console.error("error", error);
+        //     }
+        // })
     );
 
     // endTime 설정

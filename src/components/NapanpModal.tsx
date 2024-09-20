@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, TouchableOpacity, } from 'react-native';
+import { LogBox, Modal, TouchableOpacity, } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
 import { Spacer } from '../utils/UtilFunctions';
@@ -15,6 +15,11 @@ type NapnapModalType = {
 }
 
 const NapnapModal = ({isModalVisible, setModalVisible, setIsSetTimer}: NapnapModalType) => {
+    LogBox.ignoreLogs([
+        'Each child in a list should have a unique "key" prop',
+        
+    ]);
+
     const timer = useAppSelector(state => state.timer.timer);
     const dispatch = useAppDispatch()
     const [ isZero, setIsZero ] = useState(true)

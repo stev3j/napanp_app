@@ -4,27 +4,29 @@ import { store } from './src/redux/store';
 
 // Navigation
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { createNativeStackNavigator, } from "@react-navigation/native-stack";
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 import HomeScreen from './src/route/HomeScreen';
 import FinishScreen from './src/route/FinishScreen';
 import RootStackParamList from './src/navigation/RootStackParamList';
 
-const RootStack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <RootStack.Navigator 
+        <Stack.Navigator 
           initialRouteName="Home"
-          screenOptions={{header: ()=>{return null}}}
+          screenOptions={{
+            ...TransitionPresets.FadeFromBottomAndroid,
+            header: ()=>{return null}
+          }}
           >
-          <RootStack.Group>
-            <RootStack.Screen name="Home" component={HomeScreen}/>
-            <RootStack.Screen name="Finish" component={FinishScreen}/>
-          </RootStack.Group>
-        </RootStack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen}/>
+          <Stack.Screen name="Finish" component={FinishScreen}/>
+        </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );

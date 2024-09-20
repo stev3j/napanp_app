@@ -7,7 +7,7 @@ import colors from "../styles/colors";
 import ImagePaths from "../assets/images/ImagePaths";
 import TerminateButton from "../assets/buttons/TerminateButton";
 import ReloadButton from "../assets/buttons/ReloadButton";
-import { Button } from "react-native";
+import { Button, LogBox } from "react-native";
 import Sound from "react-native-sound";
 import { useEffect, useRef } from "react";
 import { useAppDispatch } from "../redux/hook";
@@ -15,6 +15,10 @@ import { setTimer } from "../redux/slices/timer";
 // import AudioPaths from "../assets/audios/AudioPaths";
 
 const FinishScreen = ({ route }: any) => {
+    LogBox.ignoreLogs([
+        'Non-serializable values were found in the navigation state.',
+    ]);
+
     const { setPlay, setIsSetTimer } = route.params;
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -48,6 +52,7 @@ const FinishScreen = ({ route }: any) => {
                 alarmSound.current.stop()
                 navigation.goBack()
             }} onPress5Minute={() => {
+                alarmSound.current.stop()
                 dispatch(setTimer({minute: '05', second: '00'}))
                 setIsSetTimer(true)
                 setPlay(true)
