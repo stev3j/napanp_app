@@ -56,3 +56,38 @@ export const MyAlert = (dispatch: any, setIsSetTimer: any, setPlay: any) => {
         ], { cancelable: false }
     );
 }
+
+
+interface Timer {
+  minute: string;
+  second: string;
+}
+
+// 받아온 시간 포맷하기 (ex. 11:11:30)
+export const foramtTime = (time: string, timer: Timer): string => {
+  const array = time.split(':');
+  let hour = +array[0];
+  let minute = +array[1];
+  let second = +array[2];
+
+  second = second + +timer.second;
+
+  if (second > 59) {
+    minute = minute + 1;
+  }
+
+  minute = minute + +timer.minute;
+
+  if (minute > 59) {
+    hour = hour + 1;
+    minute = minute - 60;
+  }
+
+  if (hour < 12) {
+    const result = `오전 ${hour}시 ${minute}분`;
+    return result;
+  } else {
+    const result = `오후 ${hour - 12}시 ${minute}분`;
+    return result;
+  }
+};
